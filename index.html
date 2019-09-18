@@ -1,0 +1,149 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Telegram</title>
+    <link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="telegram.css">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Crimson+Text&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row align-items-center p-3" id="header">
+            <div class="toggle col-12 col-lg-4">
+                <span> <i class="fa fa-bars bar" aria-hidden="true"></i></span>
+                <span class="text-white telegram-title-head px-4">Telegram</span>
+            </div>
+            <div class="chat-messages-header col-12 col-lg-8">
+                <div class="escape-back m-2" onClick="onExit(this)"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </div>
+                <div>Connecting...</div>
+                <div>
+                    <span id="search-icon">
+                        <i class="fa fa-search " aria-hidden="true"></i>
+                    </span>
+                    <span id="ellipsis">
+                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="content-area-left col-12 col-lg-4 position-relative">
+                <div id="search-box">
+                    <nav class="position-absolute">
+                        <ul>
+                            <div>
+                                <li><a href="#"><i class="fa fa-users px-3" aria-hidden="true"></i>New group</a></li>
+                            </div>
+                            <div>
+                                <li><a href="#"><i class="fa fa-address-book px-3" aria-hidden="true"></i>Contacts</a>
+                                </li>
+                            </div>
+                            <div>
+                                <li><a href="#"><i class="fa fa-cog px-3" aria-hidden="true"></i>Settings</a></li>
+                            </div>
+                            <div>
+                                <li><a href="#"><i class="fa fa-question-circle-o px-3" aria-hidden="true"></i>Telegram
+                                        FAQ</a></li>
+                            </div>
+                            <div>
+                                <li><a href="#"><i class="fa fa-telegram px-3" aria-hidden="true"></i>About</a></li>
+                            </div>
+                        </ul>
+                    </nav>
+                    <input type="text" oninput="finder()" id="myInput" class="search-box" placeholder="Search">
+                </div>
+                <div class="contacts" id="contactList">
+                </div>
+            </div>
+            <div class="msg-body chat chat-wrapper col-12 col-lg-8 ">
+                <!-- <div class="text-center chat-header welcome-area">Please Select A Chat To Continue...</div> -->
+                <div id="scrolling">
+                    <div class="chatBody chat-body" id="chat-body-items">
+                    </div>
+                    <div class="chat-footer">
+                        <div class="row align-items-center no-gutters">
+                            <!-- <div class="col-auto">
+                            <div class="d-flex align-items-center justify-content-center img-avator bg-danger ">
+                                <div class="font-weight-normal text-white">DI</div>
+                            </div>
+                        </div> -->
+                            <div class="col"><input data-sender="" data-receiver="" id="message-input-area" type="text" ></div>
+                            <div class="col-auto">
+                                <div id="message-receive-button">
+                                   <button class="receive-btn"> Receive </button>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div id="message-send-button">
+                                    <button class="send-btn">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="telegram.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.bar').click(function () {
+                $("ul").toggle('active');
+                window.addEventListener('mouseup',function(event){
+                    if((event.target != $('ul'))){
+                        $('ul').hide("slow");
+                    }
+               
+            });
+                // $('ul').toggle('active');
+                // $('body').click(function(){
+                //     // $('ul').toggle('inactive');
+                // })
+                // &&(event.target.parentNode != $('ul'))
+            })
+        })
+        window.onresize = function () { location.reload(); }
+
+       
+
+        
+
+        // var messages = document.getElementById("messages");
+        // var textbox = document.getElementById("message-input-area");
+        // var button = document.getElementById("message-send-button");
+
+        // button.addEventListener("click", function () {
+        //     var messageWrapper = document.createElement("div");
+        //     var userAvator = document.createElement("div");
+        //     var messageItem = document.createElement("div");
+        //     messageItem.innerHTML = textbox.value;
+        //     userAvator.innerHTML = newMessage.innerHTML = userAvator;
+        //     newMessage.innerHTML = messageItem;
+        //     messages.appendChild(newMessage);
+        //     textbox.value = "";
+        // });
+    </script>
+
+</body>
+
+</html>
