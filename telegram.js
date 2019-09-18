@@ -1,4 +1,7 @@
+var staticActualUser = { id: 4, name: "Arvind", age: 18, email: "ar@gmail.com", phoneno: 4444, messages: [] }
+
 var person = [
+
     { id: 1, name: "Dinesh", age: 18, email: "di@gmail.com", phoneno: 1111, messages: [] },
     { id: 2, name: "Vijay", age: 19, email: "vi@gmail.com", phoneno: 2222, messages: [] },
     { id: 3, name: "Rama", age: 18, email: "ra@gmail.com", phoneno: 3333, messages: [] },
@@ -13,6 +16,8 @@ var person = [
     { id: 12, name: "Ram", age: 18, email: "ra@gmail.com", phoneno: 121212, messages: [] },
     { id: 13, name: "Sabi", age: 18, email: "sa@gmail.com", phoneno: 121333, messages: [] }
 ];
+
+
 let colors = [
     "bg-primary",
     "bg-dark",
@@ -30,7 +35,9 @@ var date = today.getDate() + "/" + (month + 1);
 
 let current = person.length;
 person.map((p, current) => {
-    row.innerHTML += `<div onClick="onTouch('${p.name}', ${current})" class="item position-relative align-items-center d-flex">
+    if (p.id != 4) {
+
+        row.innerHTML += `<div onClick="onTouch('${p.name}', ${current})" class="item position-relative align-items-center d-flex">
                         <div class="d-flex align-items-center justify-content-center img-avator ${colors[random]} ">
                             <div class="font-weight-normal  text-white">
                             ${p.name.toUpperCase().slice(0, 2)}</div>
@@ -42,6 +49,7 @@ person.map((p, current) => {
                         <div class="time position-absolute">${date}</div>
                         </div>            
                     `;
+    }
 });
 
 var today = new Date();
@@ -89,9 +97,14 @@ function onTouch(name, id) {
 
     if (conversation) {
         // console.log(conversation);
-        document.getElementById("message-input-area").dataset.sender = '007';
+        document.getElementById("message-input-area").dataset.sender = conversation.id;
         document.getElementById("message-input-area").dataset.receiver = conversation.id;
-        document.querySelector(".chat-messages-header").innerHTML = `
+
+        // console.log(conversation.id);
+
+        document.querySelector(".chat-messages-header").innerHTML =
+            // console.log(123);
+            `
         <div>
             <div class="escape-back m-2" onClick="onExit(this)">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
@@ -123,7 +136,7 @@ function onTouch(name, id) {
                 
                 <div id="chat-highlighter">
                     <h5>${message.owner}</h5>
-                    <input type="text" class="item_input" onInput="check()"  value="${message.text}" disabled>
+                    <input type="text" class="item_input"   value="${message.text}" disabled>
                 </div>
             </div>`;
             $("#chat-body-items").append(messageElement)
@@ -133,6 +146,100 @@ function onTouch(name, id) {
         messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
     }
     document.getElementById("message-input-area").value = "";
+
+    var conversations = [
+        {
+            id: 1,
+            between: [staticActualUser.id, id],
+            messages: [
+                {
+                    text: $('#message-input-area').val(),
+                    sender: staticActualUser.id,
+                    receiver: id
+                },
+                // {
+                //     text: $('#message-input-area').val(),
+                //     sender: staticActualUser.id,
+                //     receiver: 1
+                // },
+                {
+                    text: $('#message-input-area').val(),
+                    sender: id,
+                    receiver: staticActualUser.id
+                }
+            ]
+        }
+        // ,
+        // {
+        //     id: 2,
+        //     between: [4, 2],
+        //     messages: [
+        //         {
+        //             text: "",
+        //             sender: 4,
+        //             receiver: 2
+        //         }
+        //     ]
+        // },
+    ]
+
+
+    // Onclicking any user from user list
+    const user1 = staticActualUser.id // static user ie,. YOU > id 4
+    const user2 = id // userId of the person whom we click from the userList
+    let getConversationId = conversations.find(oo => {
+        return oo.between.includes(user1) && oo.between.includes(user2)
+    })
+
+    if (getConversationId) {
+        conversationId = getConversationId.id
+
+    } else {
+        let payload = {
+            id: id,
+            between: [user1, user2],
+            messages: []
+        }
+        conversations.push(payload)
+
+    }
+
+    // Onclicking the send button
+    $("#message-send-button").on('click', function () {
+        let senderId = $('#message-input-area').data('sender')
+        let receiverId = $('#message-input-area').data('receiver')
+        let conversationId = $('#message-input-area').data('conversation')
+
+        let getConversationDetails = conversations.find(oo => {
+            return oo.id == conversationId
+        })
+        getConversationDetails.push(
+            {
+                text: $('#message-input-area').val(),
+                sender: senderId,
+                receiver: receiverId
+            }
+        )
+    })
+
+    // Onclicking the receive button
+    $("#message-receive-button").on('click', function () {
+
+        let senderId = $('#message-input-area').data('receiver')
+        let receiverId = $('#message-input-area').data('sender')
+        let conversationId = $('#message-input-area').data('conversation')
+
+        let getConversationDetails = conversations.find(oo => {
+            return oo.id == conversationId
+        })
+        getConversationDetails.push(
+            {
+                text: $('#message-input-area').val(),
+                sender: senderId,
+                receiver: receiverId
+            }
+        )
+    })
 }
 function onExit(e) {
     let displayLeftHead = document.querySelector(".toggle");
@@ -148,8 +255,9 @@ function onExit(e) {
 const makeRow = arr => {
     let totalRows = ``;
     arr.forEach(p => {
-        totalRows =
-            `${totalRows} <div onClick="onTouch('${p.name}', ${current})" class="item position-relative align-items-center d-flex">
+        if (p.id != 4) {
+            totalRows =
+                `${totalRows} <div onClick="onTouch('${p.id}', ${current})" class="item position-relative align-items-center d-flex">
             <div class="d-flex align-items-center justify-content-center img-avator ${colors[random]} ">
                 <div class="font-weight-normal  text-white">
                 ${p.name.toUpperCase().slice(0, 2)}</div>
@@ -162,6 +270,7 @@ const makeRow = arr => {
             </div> 
         </div>    
     `;
+        }
     });
     document.getElementById("contactList").innerHTML = totalRows;
 };
@@ -178,59 +287,67 @@ function finder(name) {
     }
 }
 
-function onEntered(e) {
-    let forWelcome = document.querySelector(".body-greetings");
-    forWelcome.style.display = "none";
-}
+// function onEntered(e) {
+//     let forWelcome = document.querySelector(".body-greetings");
+//     forWelcome.style.display = "none";
+// }
 
-class chatBody {
-    constructor(itemName) {
-        this.create(itemName);
-    }
+// class chatBody {
+//     constructor(itemName) {
+//         this.create(itemName);
+//     }
 
-    create(itemName) {
-        const msgcontainer = document.querySelector(".msg-body");
-        let textarea = document.querySelector(".item_input");
-        // console.log(textarea.value);
-        textarea.value = itemName;
+//     create(itemName) {
+//         const msgcontainer = document.querySelector(".msg-body");
+//         let textarea = document.querySelector(".item_input");
+//         // console.log(textarea.value);
+//         textarea.value = itemName;
 
-        textarea.disabled = true;
-        textarea.classList.add(".msg-body");
-        textarea.type = "text";
+//         textarea.disabled = true;
+//         textarea.classList.add(".msg-body");
+//         textarea.type = "text";
 
-        let itemBox = document.querySelector(". message-holder");
-        itemBox.classList.add("chatBody");
+//         let itemBox = document.querySelector(". message-holder");
+//         itemBox.classList.add("chatBody");
 
-        // console.log(chatBody);
-        console.log(itemBox);
+//         // console.log(chatBody);
+//         console.log(itemBox);
 
-        msgcontainer.appendChild(itemBox);
+//         msgcontainer.appendChild(itemBox);
 
-        // itemBox.appendChild(chatBody);
-    }
-}
+//         // itemBox.appendChild(chatBody);
+//     }
+// }
 
-function check() {
-    var textarea = document.querySelector("#message-input-area");
-    if (textarea.value != "") {
-        new chatBody(textarea.value);
-        textarea.value = "";
-    }
-    textarea.value = "";
-}
+// function check() {
+//     var textarea = document.querySelector("#message-input-area");
+//     if (textarea.value != "") {
+//         new chatBody(textarea.value);
+//         textarea.value = "";
+//     }
+//     textarea.value = "";
+// }
 
 window.addEventListener("keydown", e => {
     if (e.which == 13) {
         $('#message-send-button').trigger('click')
     }
 });
+window.addEventListener("keydown", e => {
+    if (e.which == 39) {
+        $('#message-receive-button').trigger('click')
+    }
+});
 
 
 $(document).on('click', '#message-send-button', function () {
     let userId = $('#message-input-area').data("sender")
+    // console.log(userId);
     let conversation = person.find((oo) => {
         return userId == oo.id
     })
+    // console.log(conversation.id);
+
     if (conversation) {
         let payload = {
             text: $('#message-input-area').val(),
@@ -240,6 +357,12 @@ $(document).on('click', '#message-send-button', function () {
         conversation.messages.push(payload)
         onTouch(null, conversation.id)
     }
+    // if(onTouch(name,userId)){
+    //     location.reload;
+    // }
+    // else{
+    //     location.reload();
+    // }
 })
 
 $(document).on('click', '#message-receive-button', function () {
